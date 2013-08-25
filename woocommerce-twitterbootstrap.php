@@ -2,11 +2,11 @@
 /*
 Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
-Plugin URI: http://bassjobsen.weblogs.fm/
+Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
 Version: 0.0.1.
 Author: Bass Jobsen
-Author URI: ttp://bassjobsen.weblogs.fm/
+Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
 */
 
@@ -46,13 +46,12 @@ class WooCommerce_Twitter_Bootstrap
 */ 
 public function __construct() 
 { 
-	//load_plugin_textdomain( 'demo-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+	load_plugin_textdomain( 'wootb', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
  	// register actions 
 	add_action('admin_init', array(&$this, 'admin_init')); 
 	add_action('admin_menu', array(&$this, 'add_menu')); 
 	
-	wp_register_style ( 'woocommerce-twitterbootstrap', plugins_url( 'css/woocommerce-twitterboostrap.css' , __FILE__ ), 'woocommerce' );
-    wp_enqueue_style ( 'woocommerce-twitterbootstrap');
+	
 	
 	add_filter( 'init', array( $this, 'init' ) );
 } 
@@ -103,7 +102,7 @@ public function init_settings()
 public function add_menu() 
 {
 	 
-	 add_options_page('WooCommerce Twitter Bootstrap Settings', 'WooCommerce_Twitter_Bootstrap', 'manage_options', 'woocommerce-twitterbootstrap', array(&$this, 'plugin_settings_page'));
+	 add_options_page('WooCommerce Twitter Bootstrap Settings', 'WooCommerce Bootstrap', 'manage_options', 'woocommerce-twitterbootstrap', array(&$this, 'plugin_settings_page'));
 } // END public function add_menu() 
 
 /** * Menu Callback */ 
@@ -121,9 +120,23 @@ include(sprintf("%s/templates/settings.php", dirname(__FILE__)));
 } 
 // END public function plugin_settings_page() 
 
+	
+
+
 
 function init()
 {
+if( !function_exists( 'bssetstylesheets' ) ):
+
+function bssetstylesheets()
+{
+	wp_register_style ( 'woocommerce-twitterbootstrap', plugins_url( 'css/woocommerce-twitterboostrap.css' , __FILE__ ), 'woocommerce' );
+    wp_enqueue_style ( 'woocommerce-twitterbootstrap');
+}
+endif;	
+add_action( 'wp_enqueue_scripts', 'bssetstylesheets', 99 );
+
+
 
 function my_template_redirect(){
    //pages you want to make true, ex. is_shop()
@@ -163,7 +176,7 @@ if ( ! function_exists( 'woocommerce_output_content_wrapper_bs' ) ) {
 	 * @return void
 	 */
 	function woocommerce_output_content_wrapper_bs() {
-		//echo 'START';
+
 		woocommerce_get_template( 'shop/wrapper-start.php' );
 	}
 }
@@ -224,8 +237,10 @@ foreach ($images as $image) {
 $image->setAttribute('class',$image->getAttribute('class').' img-responsive');
 $image->removeAttribute('height');
 $image->removeAttribute('width');
+//see: http://stackoverflow.com/questions/6321481/printing-out-html-content-from-domelement-using-nodevalue
+echo utf8_decode($doc->saveXML($image)); break;
 }
-echo $doc->saveHTML();
+
 }	
 
 
@@ -237,7 +252,7 @@ echo $doc->saveHTML();
 |---------------------------------------------------|-----------|
 |		2		|	1		|	2		|	2		|	10		|
 |---------------------------------------------------|-----------|
-|		3		|	1		|	2		|	3		|	12		|
+|		3		|	1		|	1		|	3		|	 9		|
 |---------------------------------------------------|-----------|
 |		4		|	1		|	2		|	4		|	12		|
 |---------------------------------------------------|-----------|
@@ -251,10 +266,19 @@ echo $doc->saveHTML();
 */
 
 // Store column count for displaying the grid
-if ( empty( $woocommerce_loop['columns'] ) )
-$woocommerce_loop['columns'] = apply_filters( 'loop_shop_columns', 4 );
+global $woocommerce_loop;
 
-if($woocommerce_loop['columns']>2)
+if ( empty( $woocommerce_loop['columns'] ) )
+{
+$woocommerce_loop['columns'] = get_option('number_of_columns', 4 );	
+}
+
+
+if($woocommerce_loop['columns']==3)
+{
+	add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 9;' ), 10 );
+}	
+elseif($woocommerce_loop['columns']>2)
 {
 add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 12;' ), 10 );
 }

@@ -1,6 +1,6 @@
 <div class="wrap"> 
 
-<h2>WooCommerce Twitter Bootstrap Settings</h2> 
+<h2>WooCommerce Twitter Bootstrap <?php echo __('Settings','wootb');?></h2> 
 
 <form method="post" action="options.php"> 
 <?php @settings_fields('woocommerce-twitterbootstrap-group'); ?> 
@@ -8,7 +8,7 @@
 <table class="form-table"> 
 <tr valign="top"> 
 <th scope="row">
-<label for="setting_a">Number of columns per row</label></th> 
+<label for="setting_a"><?php echo __('Number of columns per row','wootb');?></label></th> 
 <td>
 	<select name="number_of_columns" id="number_of_columns">
 	
@@ -27,7 +27,7 @@
 
 <tr valign="top"> 
 <th scope="row">
-<label for="tbversion">Version of Twitter's Bootstrap</label></th> 
+<label for="tbversion"><?php echo __('Twitter\'s Bootstrap version','wootb');?></label></th> 
 <td>
 	<?php
 	$tbversion = (get_option('tbversion'))?get_option('tbversion'):3;

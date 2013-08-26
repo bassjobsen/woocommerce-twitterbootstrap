@@ -10,3 +10,13 @@
 	width: 100%;
 	float: none;
 }
+@media (min-width: 768px) 
+{ 
+	.woocommerce div.product  div.bssingleproduct  div.entry-summary, 
+	.woocommerce-page div.product  div.bssingleproduct  div.entry-summary, 
+	.woocommerce #content div.product div.bssingleproduct  div.entry-summary, 
+	.woocommerce-page #content div.product div.bssingleproduct div.entry-summary
+	{
+		padding-left: 15px;
+	}
+}

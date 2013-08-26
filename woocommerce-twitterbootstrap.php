@@ -147,7 +147,7 @@ function my_template_redirect(){
 
     //var_dump($plugin_dir);
 
-    load_template($plugin_dir . '/templates/bs-archive-product.php');
+    load_template($plugin_dir . 'templates/bs-archive-product.php');
     exit;
    }
    

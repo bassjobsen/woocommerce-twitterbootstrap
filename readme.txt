@@ -1,13 +1,20 @@
-WooCommerce Twitter's Bootstrap Plugin
-======================================
+=== WooCommerce Twitter's Bootstrap ===
+Contributors: bassjobsen
+Donate link: http://bassjobsen.weblogs.fm/
+Tags: WooCommerce, Twitter's Bootstrap, responsive
+Requires at least: 3.6
+Tested up to: 3.6
+Stable tag: 1.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+This plugin wraps your Woocommerce views in the Twitter's Bootstrap Grid. Makes your views full responsive.
+
+
+== Description ==
 
 This plugin wraps your Woocommerce views in the Twitter's Bootstrap Grid. Makes your views full responsive. No changes to your theme or other plugins needed.
 
-Installation
-------------
-
-[Download the latest version as .zip file](https://github.com/bassjobsen/woocommerce-twitterboostrap/archive/master.zip). Upload the .zip file to your Wordpress plugin directory (wp-content/plugin) and use the activate function in your dashboard.
-( Plugins > installed plugins ).
 
 Twitter's Bootstrap version
 ---------------------------
@@ -66,22 +73,39 @@ This will be result in the grids shown below:
 
 </pre>
 
-Requirements
----------
+Contribute!
+-----------
+If you have suggestions for a new feature or improvement, feel free to contact us on [Twitter]((http://twitter.com/JamedoWebsites). Alternatively, you can fork the plugin from [Github](https://github.com/bassjobsen/woocommerce-twitterbootstrap).
+
+== Installation ==
+
+1. You can download and install WooCommerce Twitter's Bootstrap using the built in WordPress plugin installer. If you download WooCommerce Twitter's Bootstrap manually, make sure it is uploaded to "/wp-content/plugins/woocommerce-twitterbootstrap/".
+
+1. Activate BuddyPress in the "Plugins" admin panel using the "Activate" link. 
+
+== Frequently Asked Questions ==
+
+
+== Screenshots ==
+
+1. Setting panel of WooCommerce Twitter's Bootstrap
+
+== Changelog ==
+
+= 1.0 =
+* First version
+
+== Requirements ==
+
 * [Wordpress](http://wordpress.org/download/) tested with >= 3.6
 * [Twitter's Bootstrap](http://getboostrap.com/) >= 3.0.0 (Twitter's Bootstrap 2 tested with v2.3.2.)
 * [WooCommerce](http://wordpress.org/plugins/woocommerce/) tested with >= 2.0.13
 
-Support
--------
+== Support ==
 
 We are always happy to help you. If you have any question regarding this code. [Send us a message](http://www.jamedowebsites.nl/contact/) or contact us on twitter [@JamedoWebsites](http://twitter.com/JamedoWebsites).
 
-Todo
--------
+== Todo ==
 
 * Apply grid on all views
 * Make template available in the theme for overwriting and customizing
-
-
-

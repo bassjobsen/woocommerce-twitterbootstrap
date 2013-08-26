@@ -1,0 +1,52 @@
+# Copyright (C) 2013 WooCommerce Twitter Bootstrap
+# This file is distributed under the same license as the WooCommerce Twitter Bootstrap package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Twitter Bootstrap 0.0.1.\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/woocommerce-twitterbootstrap\n"
+"POT-Creation-Date: 2013-08-25 07:49:24+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-08-25 12:10+0100\n"
+"Last-Translator: Bass Jobsen <bass@w3masters.nl>\n"
+"Language-Team: Jamedo Websites <info@jamedowebsites.nl>\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: templates/settings.php:3
+msgid "Settings"
+msgstr "Instellingen"
+
+#: templates/settings.php:11
+msgid "Number of columns per row"
+msgstr "Aantal kolommen per rij"
+
+#: templates/settings.php:30
+msgid "Twitter's Bootstrap version"
+msgstr "Twitter's Bootstrap versie"
+
+#: woocommerce-twitterbootstrap.php:113
+msgid "You do not have sufficient permissions to access this page."
+msgstr "U heeft niet voldoende rechten om deze pagina op te vragen."
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Twitter Bootstrap"
+msgstr "WooCommerce Twitter Bootstrap"
+
+#. #-#-#-#-#  wootb.pot (WooCommerce Twitter Bootstrap 0.0.1.)  #-#-#-#-#
+#. Plugin URI of the plugin/theme
+#. #-#-#-#-#  wootb.pot (WooCommerce Twitter Bootstrap 0.0.1.)  #-#-#-#-#
+#. Author URI of the plugin/theme
+msgid "http://bassjobsen.weblogs.fm/"
+msgstr "http://bassjobsen.weblogs.fm/"
+
+#. Description of the plugin/theme
+msgid "Adds Twitter's Bootstrap's Grid to WooCommerce"
+msgstr "Voegt Twitter's Bootstrap's raster (grid) toe aan WooCommerce"
+
+#. Author of the plugin/theme
+msgid "Bass Jobsen"
+msgstr "Bass Jobsen"
+

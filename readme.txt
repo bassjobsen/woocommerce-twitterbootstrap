@@ -75,20 +75,20 @@ This will be result in the grids shown below:
 
 Contribute!
 -----------
-If you have suggestions for a new feature or improvement, feel free to contact us on [Twitter]((http://twitter.com/JamedoWebsites). Alternatively, you can fork the plugin from [Github](https://github.com/bassjobsen/woocommerce-twitterbootstrap).
+If you have suggestions for a new feature or improvement, feel free to contact us on [Twitter](http://twitter.com/JamedoWebsites). Alternatively, you can fork the plugin from [Github](https://github.com/bassjobsen/woocommerce-twitterbootstrap).
 
 == Installation ==
 
 1. You can download and install WooCommerce Twitter's Bootstrap using the built in WordPress plugin installer. If you download WooCommerce Twitter's Bootstrap manually, make sure it is uploaded to "/wp-content/plugins/woocommerce-twitterbootstrap/".
 
-1. Activate BuddyPress in the "Plugins" admin panel using the "Activate" link. 
+1. Activate WooCommerce Twitter's Bootstrap in the "Plugins" admin panel using the "Activate" link. 
 
 == Frequently Asked Questions ==
 
 
 == Screenshots ==
 
-1. Setting panel of WooCommerce Twitter's Bootstrap
+1. Settings panel of WooCommerce Twitter's Bootstrap
 
 == Changelog ==
 

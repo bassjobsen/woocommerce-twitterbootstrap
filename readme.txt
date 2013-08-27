@@ -1,6 +1,6 @@
 === WooCommerce Twitter's Bootstrap ===
 Contributors: bassjobsen
-Donate link: http://bassjobsen.weblogs.fm/
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SNYGRL7YNVYQW
 Tags: WooCommerce, Twitter's Bootstrap, responsive
 Requires at least: 3.6
 Tested up to: 3.6

@@ -12,7 +12,7 @@ Installation
 Twitter's Bootstrap version
 ---------------------------
 Select you Twitter's Boostrap version in the settings Panel.
-You could choose between version 2 and 3 (RC 2).
+You could choose between version 2 and 3.
 
 Number of columns (Shop page)
 -----------------------------

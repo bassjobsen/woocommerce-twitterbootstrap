@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.0
+Version: 1.0.1
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -141,15 +141,16 @@ add_action( 'wp_enqueue_scripts', 'bssetstylesheets', 99 );
 function my_template_redirect(){
    //pages you want to make true, ex. is_shop()
    global $woocommerce;
-   if(is_shop()) {
-
-       $plugin_dir = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) );
-
-    //var_dump($plugin_dir);
-
+   $plugin_dir = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) );
+   if(is_shop() || is_product_category()) {
     load_template($plugin_dir . 'templates/bs-archive-product.php');
     exit;
    }
+   /*else if(is_product_category())
+   {
+	   load_template($plugin_dir . 'templates/bs-content-product_cat.php');
+	   exit;
+   }*/	   
    
 }
 
@@ -282,7 +283,6 @@ elseif($woocommerce_loop['columns']>2)
 {
 add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 12;' ), 10 );
 }
-
 
 add_action('woocommerce_before_shop_loop','setupgrid');
 

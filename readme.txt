@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: WooCommerce, Twitter's Bootstrap, responsive
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ This plugin wraps your Woocommerce views in the Twitter's Bootstrap Grid. Makes 
 Twitter's Bootstrap version
 ---------------------------
 Select you Twitter's Boostrap version in the settings Panel.
-You could choose between version 2 and 3 (RC 2).
+You could choose between version 2 and 3.0.
 
 Number of columns (Shop page)
 -----------------------------
@@ -92,6 +92,10 @@ If you have suggestions for a new feature or improvement, feel free to contact u
 
 == Changelog ==
 
+= 1.0.1 =
+* Bootstrap 3.0
+* Grids applied to category pages too
+
 = 1.0 =
 * First version
 
@@ -107,5 +111,4 @@ We are always happy to help you. If you have any question regarding this code. [
 
 == Todo ==
 
-* Apply grid on all views
 * Make template available in the theme for overwriting and customizing

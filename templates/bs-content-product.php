@@ -101,7 +101,7 @@ if ( 0 == ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] || 1 
 <div class="container">
 <div class="row">
 
-<?
+<?php
 }
 ?>
 <div class="<?php echo $classes?>">
@@ -136,11 +136,11 @@ if ( 0 == ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] || 1 
 
 	<?php do_action( 'woocommerce_after_shop_loop_item' ); ?>
 </div>
-<?
+<?php
 
 if ( 0 == ($woocommerce_loop['loop']) % $woocommerce_loop['columns'] )
 {
 	?>
 	</div></div><!--end row -->
-	<?
+	<?php
 }	

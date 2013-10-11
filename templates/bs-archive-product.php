@@ -51,7 +51,7 @@ get_header('shop'); ?>
 				<?php while ( have_posts() ) : the_post(); ?>
 
 					<?php //woocommerce_get_template_part( 'content', 'product' ); ?>
-					<?include(WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'bs-content-product.php')?>
+					<?php include(WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'bs-content-product.php') ?>
 				<?php endwhile; // end of the loop. ?>
 
 			<?php //woocommerce_product_loop_end(); 
@@ -59,11 +59,11 @@ get_header('shop'); ?>
 if ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
 {
 $woocommerce_loop['loop']++;
-?><div class="<?php echo $classes?>"></div><?				
+?><div class="<?php echo $classes?>"></div><?php				
 while ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
 {
 	$woocommerce_loop['loop']++;
-	?><div class="<?php echo $classes?>"></div><?
+	?><div class="<?php echo $classes?>"></div><?php
 }
 			?>
 </div></div>

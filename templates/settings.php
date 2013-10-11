@@ -18,7 +18,7 @@
 	
 	foreach(array(1,2,3,4,6) as $number)
 	{
-		?><option value="<?php echo $number ?>" <?php echo ($numberofcolumns==$number)?' selected="selected"':''?>><?php echo $number ?></option><?
+		?><option value="<?php echo $number ?>" <?php echo ($numberofcolumns==$number)?' selected="selected"':''?>><?php echo $number ?></option><?php
 	}	
 	?>
 	</select>

@@ -1,0 +1,70 @@
+@primary: 			#ad74a2; 									/* Primary colour for buttons (alt) */
+@primarytext: 		desaturate(lighten(@primary,50%),18%);		/* Text on primary colour bg */
+
+@secondary: 		desaturate(lighten(@primary,40%),18%);		/* Secondary buttons */
+@secondarytext:	 	desaturate(darken(@secondary,60%),18%);		/* Text on secondary colour bg */
+
+@highlight: 		spin( @primary, 150 ); 						/* Prices, In stock labels, sales flash */
+@highlightext:		desaturate(lighten(@highlight,50%),18%);	/* Text on highlight colour bg */
+
+@contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
+@subtext: 			#777; 										/* small, breadcrumbs etc */
+
+.box_shadow(@shadow_x:3px, @shadow_y:3px, @shadow_rad:3px, @shadow_in:3px, @shadow_color:#888) {
+	box-shadow:@shadow_x @shadow_y @shadow_rad @shadow_in @shadow_color;
+	-webkit-box-shadow:@shadow_x @shadow_y @shadow_rad @shadow_in @shadow_color;
+	-moz-box-shadow:@shadow_x @shadow_y @shadow_rad @shadow_in @shadow_color;
+}
+.transition(@selector:all, @animation:ease-in-out, @duration:.2s) {
+	-webkit-transition:@selector @animation @duration;
+	-moz-transition:@selector @animation @duration;
+	-o-transition:@selector @animation @duration;
+	transition:@selector @animation @duration;
+}
+
+/* Product loops */
+
+	div.products {
+			h3 {
+				padding: .5em 0;
+				margin: 0;
+				font-size: 1em;
+			}
+			a {
+				text-decoration:none;
+			}
+			a img {
+				max-width: 100%;
+				height:auto;
+				display:block;
+				margin: 0 0 8px;
+				.box_shadow(0,1px,2px,0,rgba(0,0,0,0.3));
+				.transition();
+			}
+			a:hover img {
+				.box_shadow(0,1px,3px,0,rgba(0,0,0,0.4));
+			}
+			strong {
+				display:block;
+			}
+			.price {
+				color: @highlight;
+				display:block;
+				font-weight:normal;
+				margin-bottom: .5em;
+				del {
+					font-size: 0.67em;
+					color:fade( desaturate( @highlight, 75% ), 50% );
+					margin: -2px 0 0 0;
+				}
+				ins {
+					background:none;
+				}
+				.from {
+					font-size: 0.67em;
+					margin: -2px 0 0 0;
+					text-transform: uppercase;
+					color:fade( desaturate( @highlight, 75% ), 50% );
+				}
+			}
+		}

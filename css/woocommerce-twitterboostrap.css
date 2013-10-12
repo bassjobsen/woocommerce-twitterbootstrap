@@ -20,3 +20,13 @@
 		padding-left: 15px;
 	}
 }
+.woocommerce div.container.products div.row [class^="col-"] {margin-bottom: 3em !important;}
+/* from less */
+div.products h3{padding:.5em 0;margin:0;font-size:1em}
+div.products a{text-decoration:none}
+div.products a img{max-width:100%;height:auto;display:block;margin:0 0 8px;box-shadow:0 1px 2px 0 rgba(0,0,0,0.3);-webkit-box-shadow:0 1px 2px 0 rgba(0,0,0,0.3);-moz-box-shadow:0 1px 2px 0 rgba(0,0,0,0.3);-webkit-transition:all ease-in-out .2s;-moz-transition:all ease-in-out .2s;-o-transition:all ease-in-out .2s;transition:all ease-in-out .2s}
+div.products a:hover img{box-shadow:0 1px 3px 0 rgba(0,0,0,0.4);-webkit-box-shadow:0 1px 3px 0 rgba(0,0,0,0.4);-moz-box-shadow:0 1px 3px 0 rgba(0,0,0,0.4)}
+div.products strong{display:block}
+div.products .price{color:#85ad74;display:block;font-weight:normal;margin-bottom:.5em}div.products .price del{font-size:.67em;color:rgba(145,145,145,0.5);margin:-2px 0 0 0}
+div.products .price ins{background:none}
+div.products .price .from{font-size:.67em;margin:-2px 0 0 0;text-transform:uppercase;color:rgba(145,145,145,0.5)}

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: WooCommerce, Twitter's Bootstrap, responsive
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 1.0.1
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,14 @@ If you have suggestions for a new feature or improvement, feel free to contact u
 1. Settings panel of WooCommerce Twitter's Bootstrap
 
 == Changelog ==
+
+= 1.1 =
+* All items in one row with responsive column reset see: http://getbootstrap.com/css/#grid-responsive-resets
+* Option to overwrite the template in wp-conten/themes/{yourtheme}/woocommerce-twitterboostrap/
+* Shortcode for featured products [featured_products], paremeters: per_page, columns and content_product_template
+* Shortcode for recent products [recent_products], paremeters: per_page, columns and content_product_template
+* Less code for part of the CSS
+* Optional column setting 31, use with shortcodes to get 1 (mobile) 2 (tablet) 3 (desktop)
 
 = 1.0.1 =
 * Bootstrap 3.0

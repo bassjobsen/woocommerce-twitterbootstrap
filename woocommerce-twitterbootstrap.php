@@ -4,13 +4,13 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.0.1
+Version: 1.1
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
 */
 
-/*  Copyright 2023 Bass Jobsen (email : bass@w3masters.nl)
+/*  Copyright 2013 Bass Jobsen (email : bass@w3masters.nl)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,9 +32,13 @@ License: GPLv2
  **/
 if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) 
 {
+	
+	
 // Put your plugin code here
 die('install Woocommerce First');
 }
+
+	
 
 if(!class_exists('WooCommerce_Twitter_Bootstrap')) 
 { 
@@ -120,13 +124,110 @@ include(sprintf("%s/templates/settings.php", dirname(__FILE__)));
 } 
 // END public function plugin_settings_page() 
 
-	
+/**
+ * Output featured products
+ *
+ * @access public
+ * @param array $atts
+ * @return string
+ */
+function featured_products( $atts ) {
 
+extract(shortcode_atts(array(
+'per_page' => 12,
+'columns' => 4,
+'orderby' => 'date',
+'order' => 'desc',
+'content_product_template' => 'bs-content-product'
+), $atts));
+
+$args = array(
+'post_type'=> 'product',
+'post_status' => 'publish',
+'ignore_sticky_posts'=> 1,
+'posts_per_page' => $per_page,
+'orderby' => $orderby,
+'order' => $order,
+'meta_query' => array(
+array(
+'key' => '_visibility',
+'value' => array('catalog', 'visible'),
+'compare' => 'IN'
+),
+array(
+'key' => '_featured',
+'value' => 'yes'
+)
+)
+);
+
+return $this->showproductspeciallist($args,$content_product_template,$columns);
+
+}
+
+/**
+ * Recent Products shortcode
+ *
+ * @access public
+ * @param array $atts
+ * @return string
+ */
+public function recent_products( $atts ) {
+
+global $woocommerce;
+
+extract(shortcode_atts(array(
+'per_page' => '12',
+'columns' => '4',
+'orderby' => 'date',
+'order' => 'desc',
+'content_product_template' => 'bs-content-product'
+), $atts));
+
+$meta_query = $woocommerce->query->get_meta_query();
+
+$args = array(
+'post_type'=> 'product',
+'post_status' => 'publish',
+'ignore_sticky_posts'=> 1,
+'posts_per_page' => $per_page,
+'orderby' => $orderby,
+'order' => $order,
+'meta_query' => $meta_query
+);	
+
+return $this->showproductspeciallist($args,$content_product_template,$columns);
+
+}
+
+function showproductspeciallist($args,$content_product_template,$columns=null)
+{
+	
+global $woocommerce_loop;	
+ob_start();
+
+$products= new WP_Query( $args );
+
+$woocommerce_loop['columns'] = ($columns)?$columns:get_option( 'number_of_columns', 4 );
+
+if ( $products->have_posts() ) 
+{
+bs_shop_loop($products,$content_product_template,$columns);	
+}
+
+wp_reset_postdata();
+return '<div class="woocommerce">' . ob_get_clean() . '</div>';
+}	
 
 
 function init()
 {
 if( !function_exists( 'bssetstylesheets' ) ):
+
+remove_shortcode( 'featured_products' );
+add_shortcode( 'featured_products', array($this, 'featured_products' ));
+remove_shortcode( 'recent_products' );
+add_shortcode( 'recent_products', array($this, 'recent_products' ));
 
 function bssetstylesheets()
 {
@@ -136,14 +237,234 @@ function bssetstylesheets()
 endif;	
 add_action( 'wp_enqueue_scripts', 'bssetstylesheets', 99 );
 
+function get_grid_classes($woocommerce_loop)
+{
+/* the grid display */
+/*
+|  	columns		| mobile 	| tablet 	| desktop	|per page 	|
+----------------------------------------------------|-----------|
+|		1		|	1		|	1		|	1		| 	10		|
+|---------------------------------------------------|-----------|
+|		2		|	1		|	2		|	2		|	10		|
+|---------------------------------------------------|-----------|
+|		3		|	1		|	1		|	3		|	9		|
+|---------------------------------------------------|-----------|
+|		4		|	1		|	2		|	4		|	12		|
+|---------------------------------------------------|-----------|
+|		5		|	n/a		|	n/a		|	n/a		|	n/a	    |
+|---------------------------------------------------|-----------|
+|		6		|	2		|	4		|	6		|	12		|
+|---------------------------------------------------|-----------|
+|		>=6		|	n/a		|	n/a		|	n/a		|	n/a		|
+|---------------------------------------------------------------|
+* 
+* 
+*/
+
+/* the grid display Twitter's Bootstrap 2.x*/
+/*
+|  	columns		| mobile / tablet| desktop	|per page |
+------------------------------------------------------|
+|		1		|	1		     |	1		| 	10	  |
+|-----------------------------------------------------|
+|		2		|	1		     |	2	    |	10	  |
+|-----------------------------------------------------|
+|		3		|	1			 |	3		|	9     |
+|-----------------------------------------------------|
+|		4		|	1		     |	4	    |   12	  |
+|-----------------------------------------------------|
+|		5		|	n/a		     |	n/a		|	n/a	  |	
+|-----------------------------------------------------|
+|		6		|	2		     |	4		|	12	  |
+|-----------------------------------------------------|
+|		>=6		|	n/a		     |	n/a		|	n/a	  |	
+|-----------------------------------------------------|
+* 
+* 
+*/
+if(get_option( 'tbversion', 3 )==2)
+{
+	switch($woocommerce_loop['columns'])
+	{
+	case 6: $classes = 'span2'; break;
+	case 4: $classes = 'span3'; break;
+	case 3: $classes = 'span4'; break;
+	case 31: $classes = 'span4'; break;
+	case 2: $classes = 'span6'; break;
+	default: $classes = 'span12';
+	}
+}	
+else
+{
+switch($woocommerce_loop['columns'])
+{
+	
+	case 6: $classes = 'col-xs-6 col-sm-3 col-md-2'; break;
+	case 4: $classes = 'col-xs-12 col-sm-6 col-md-3'; break;
+	case 3: $classes = 'col-xs-12 col-sm-12 col-md-4'; break;
+	case 31: $classes = 'col-xs-12 col-sm-6 col-md-4'; break;
+	case 2: $classes = 'col-xs-12 col-sm-6 col-md-6'; break;
+	default: $classes = 'col-xs-12 col-sm-12 col-md-12';
+	
+}
+}
+return $classes;
+}
+
+
+function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-product')
+{
+	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/'.$template.'.php' ))
+	{
+					 $template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/bs-content-product.php';
+	}	
+	
+	/*if ( 
+	
+	( 
+	
+	$woocommerce_loop['columns'] != 6
+	&&
+	0 == ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] 
+	
+	)
+	|| 1 == $woocommerce_loop['columns'] )
+				{
+					?>
+		
+					<div class="row">
+
+					<?php
+				}*/
+				include($template);
+
+				/*if ($woocommerce_loop['columns'] != 6 && 0 == ($woocommerce_loop['loop']) % $woocommerce_loop['columns'] )
+				{
+						?>
+						</div><!--end row -->
+						<?php
+				}*/
+				if(get_option( 'tbversion', 3 )==3)// only for version 3+
+				{
+				if($woocommerce_loop['columns'] == 6) 
+				{
+					if(0 == ($woocommerce_loop['loop'] % 6)){?><div class="clearfix visible-md visible-lg"></div><?php }
+					if(0 == ($woocommerce_loop['loop'] % 4)){?><div class="clearfix visible-sm"></div><?php }
+					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-xs"></div><?php }
+			    }	
+			    elseif($woocommerce_loop['columns'] == 4) 
+				{
+					if(0 == ($woocommerce_loop['loop'] % 4)){?><div class="clearfix visible-md visible-lg"></div><?php }
+					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-sm"></div><?php }
+			    }
+			    elseif($woocommerce_loop['columns'] == 3) 
+				{
+					if(0 == ($woocommerce_loop['loop'] % 3)){?><div class="clearfix visible-md visible-lg"></div><?php }
+				}
+				elseif($woocommerce_loop['columns'] == 31) 
+				{
+					if(0 == ($woocommerce_loop['loop'] % 3)){?><div class="clearfix visible-md visible-lg"></div><?php }
+					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-sm"></div><?php }
+				}
+			    elseif($woocommerce_loop['columns'] == 2) 
+				{
+					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix invisible-xs"></div><?php }
+				}
+			    }
+				$woocommerce_loop['loop']++;
+				
+				
+
+}	
+
+add_action( 'shop_loop', 'bs_shop_loop', 99 );
+
+function bs_shop_loop($product=null,$template='bs-content-product',$columns=null)
+{
+
+$woocommerce_loop = array('loop'=>0,'columns' => ($columns)?$columns:get_option( 'number_of_columns', 4 ));	
+
+
+/* double check */
+if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_array($woocommerce_loop['columns'],array(5,7)))) { return; }
+
+// Ensure visibility
+//if ( ! $product->is_visible() )	return;
+
+// Increase loop count
+$woocommerce_loop['loop']++;
+
+				
+				
+				
+				
+				
+				?>
+
+				<?php //woocommerce_product_loop_start(); ?>
+
+				<?php woocommerce_product_subcategories(); ?>
+
+				<?php 
+				
+				$classes = get_grid_classes($woocommerce_loop);
+				
+				if($product)
+				{
+				
+					?><div class="container products"><div class="row"><?php
+				
+					while ( $product->have_posts()) : $product->the_post(); 
+				    bs_product_loop($woocommerce_loop,$classes,$template);
+					endwhile; 
+					
+				}	
+				else
+				{
+					?><div class="container products"><div class="row"><?php
+					
+					while ( have_posts() ) : the_post(); 
+					bs_product_loop($woocommerce_loop,$classes);
+					endwhile;
+					
+				}				
+				if($woocommerce_loop['columns']==31)$woocommerce_loop['columns']=3;
+				if ( 0 != ($woocommerce_loop['loop']-1) % $woocommerce_loop['columns'] )
+				{
+	
+				?><div class="<?php echo $classes?>"></div><?php				
+				while ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
+				{
+					$woocommerce_loop['loop']++;
+					?><div class="<?php echo $classes?>"></div><?php
+				}
+
+				}	
+				
+	?></div></div><?php	
+	
+}	
 
 
 function my_template_redirect(){
    //pages you want to make true, ex. is_shop()
    global $woocommerce;
-   $plugin_dir = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) );
-   if(is_shop() || is_product_category()) {
+
+   if(
+   is_shop() || 
+   is_product_category()
+   
+   ) {
+    
+    if(file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/bs-archive-product.php' ))
+	{
+		 include($template);
+	}	
+    else
+    {
+    $plugin_dir = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) );
     load_template($plugin_dir . 'templates/bs-archive-product.php');
+	}
     exit;
    }
    /*else if(is_product_category())
@@ -255,6 +576,8 @@ echo utf8_decode($doc->saveXML($image)); break;
 |---------------------------------------------------|-----------|
 |		3		|	1		|	1		|	3		|	 9		|
 |---------------------------------------------------|-----------|
+|		3(1)	|	1		|	2		|	3		|	12		|
+|---------------------------------------------------|-----------|
 |		4		|	1		|	2		|	4		|	12		|
 |---------------------------------------------------|-----------|
 |		5		|	n/a		|	n/a		|	n/a		|	n/a	    |
@@ -300,7 +623,7 @@ if ( empty( $woocommerce_loop['loop'] ) )
 
 
 	
-if($woocommerce_loop['columns']>6 || in_array($woocommerce_loop['columns'],array(5,7))) 
+if($woocommerce_loop['columns']!=31 && ($woocommerce_loop['columns']>6 || in_array($woocommerce_loop['columns'],array(5,7)))) 
 {
 echo '<div class="alert alert-error">
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

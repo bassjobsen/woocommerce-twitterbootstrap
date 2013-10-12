@@ -30,6 +30,8 @@ This will be result in the grids shown below:
 |---------------------------------------------------|-----------|
 |		3		|	1		|	1		|	3		|	 9		|
 |---------------------------------------------------|-----------|
+|		3(1)	|	1		|	2		|	3		|	12		|
+|---------------------------------------------------|-----------|
 |		4		|	1		|	2		|	4		|	12		|
 |---------------------------------------------------|-----------|
 |		5		|	n/a		|	n/a		|	n/a		|	n/a	    |
@@ -77,11 +79,27 @@ Support
 
 We are always happy to help you. If you have any question regarding this code. [Send us a message](http://www.jamedowebsites.nl/contact/) or contact us on twitter [@JamedoWebsites](http://twitter.com/JamedoWebsites).
 
-Todo
--------
+Changelog
+=========
 
-* Apply grid on all views
-* Make template available in the theme for overwriting and customizing
+1.1
+---
+
+* All items in one row with responsive column reset see: http://getbootstrap.com/css/#grid-responsive-resets
+* Option to overwrite the template in wp-conten/themes/{yourtheme}/woocommerce-twitterboostrap/
+* Shortcode for featured products [featured_products], paremeters: per_page, columns and content_product_template
+* Shortcode for recent products [recent_products], paremeters: per_page, columns and content_product_template
+* Less code for part of the CSS
+* Optional column setting 31, use with shortcodes to get 1 (mobile) 2 (tablet) 3 (desktop)
+
+1.0.1
+---
+* Bootstrap 3.0
+* Grids applied to category pages too
+
+1.0
+---
+* First version
 
 
 

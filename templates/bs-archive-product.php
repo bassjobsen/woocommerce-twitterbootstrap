@@ -10,8 +10,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-//global $woocommerce_loop;
-$woocommerce_loop = array('loop'=>0,'columns' => get_option( 'number_of_columns', 4 ));
+
 get_header('shop'); ?>
 
 	<?php
@@ -32,54 +31,32 @@ get_header('shop'); ?>
 
 		<?php do_action( 'woocommerce_archive_description' ); ?>
 
-		<?php if ( have_posts() ) : ?>
+		<?php if ( have_posts() ) : 
+		ob_start();
 
-			<?php
+
+
 				/**
 				 * woocommerce_before_shop_loop hook
 				 *
 				 * @hooked woocommerce_result_count - 20
 				 * @hooked woocommerce_catalog_ordering - 30
 				 */
-				do_action( 'woocommerce_before_shop_loop' );
-			?>
+				//do_action( 'woocommerce_before_shop_loop' );
+				do_action( 'shop_loop' );
+	
 
-			<?php woocommerce_product_loop_start(); ?>
 
-				<?php woocommerce_product_subcategories(); ?>
-
-				<?php while ( have_posts() ) : the_post(); ?>
-
-					<?php //woocommerce_get_template_part( 'content', 'product' ); ?>
-					<?include(WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'bs-content-product.php')?>
-				<?php endwhile; // end of the loop. ?>
-
-			<?php //woocommerce_product_loop_end(); 
-
-if ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
-{
-$woocommerce_loop['loop']++;
-?><div class="<?php echo $classes?>"></div><?				
-while ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
-{
-	$woocommerce_loop['loop']++;
-	?><div class="<?php echo $classes?>"></div><?
-}
-			?>
-</div></div>
-<?php
-}
-?>
-			<?php
 				/**
 				 * woocommerce_after_shop_loop hook
 				 *
 				 * @hooked woocommerce_pagination - 10
 				 */
-				do_action( 'woocommerce_after_shop_loop' );
-			?>
+				//do_action( 'woocommerce_after_shop_loop' );
 
-		<?php elseif ( ! woocommerce_product_subcategories( array( 'before' => woocommerce_product_loop_start( false ), 'after' => woocommerce_product_loop_end( false ) ) ) ) : ?>
+			 echo '<div class="woocommerce">' . ob_get_clean() . '</div>';
+			 
+		     elseif ( ! woocommerce_product_subcategories( array( 'before' => woocommerce_product_loop_start( false ), 'after' => woocommerce_product_loop_end( false ) ) ) ) : ?>
 
 			<?php woocommerce_get_template( 'loop/no-products-found.php' ); ?>
 

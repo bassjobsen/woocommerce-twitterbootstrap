@@ -68,8 +68,23 @@ This will be result in the grids shown below:
 
 </pre>
 
+Template overwriting
+--------------------
+Copy the templates from wp-content/plugins/woocommerce-twitter/templates/ to wp-content/themes/{your(child)theme}/woocommerce-twitter/. Edit the templates to adopt them to your needs now.
+
+Shortcodes
+----------
+The plugin overwrite the shortcodes of Woocommerce. There are two short code avaviable now:
+[featured_products] and [recent_products]. You could use the shortcodes in your templates for example `<?php echo do_shortcode('[featured_products columns="31" content_product_template="bs-content-product-info"]'); ?>` or in your posts `[featured_products]`.
+
+Attributes to use with the shortcodes:
+* `columns` the number of columns in your grid (see the table above). This argument overwrites the number of columns from the 
+settings. Note use 31 here to use the 3-2-1 layout (12 items per page); 
+* `per_page` sets the number of items you want to show (overwrites the settings)
+* 
+
 Requirements
----------
+------------
 * [Wordpress](http://wordpress.org/download/) tested with >= 3.6
 * [Twitter's Bootstrap](http://getboostrap.com/) >= 3.0.0 (Twitter's Bootstrap 2 tested with v2.3.2.)
 * [WooCommerce](http://wordpress.org/plugins/woocommerce/) tested with >= 2.0.13
@@ -80,10 +95,9 @@ Support
 We are always happy to help you. If you have any question regarding this code. [Send us a message](http://www.jamedowebsites.nl/contact/) or contact us on twitter [@JamedoWebsites](http://twitter.com/JamedoWebsites).
 
 Changelog
-=========
+---------
 
 1.1
----
 
 * All items in one row with responsive column reset see: http://getbootstrap.com/css/#grid-responsive-resets
 * Option to overwrite the template in wp-conten/themes/{yourtheme}/woocommerce-twitterboostrap/
@@ -93,12 +107,12 @@ Changelog
 * Optional column setting 31, use with shortcodes to get 1 (mobile) 2 (tablet) 3 (desktop)
 
 1.0.1
----
+
 * Bootstrap 3.0
 * Grids applied to category pages too
 
 1.0
----
+
 * First version
 
 

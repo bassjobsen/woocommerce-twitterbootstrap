@@ -319,31 +319,10 @@ function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-produ
 					 $template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/bs-content-product.php';
 	}	
 	
-	/*if ( 
-	
-	( 
-	
-	$woocommerce_loop['columns'] != 6
-	&&
-	0 == ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] 
-	
-	)
-	|| 1 == $woocommerce_loop['columns'] )
-				{
-					?>
-		
-					<div class="row">
 
-					<?php
-				}*/
 				include($template);
 
-				/*if ($woocommerce_loop['columns'] != 6 && 0 == ($woocommerce_loop['loop']) % $woocommerce_loop['columns'] )
-				{
-						?>
-						</div><!--end row -->
-						<?php
-				}*/
+
 				if(get_option( 'tbversion', 3 )==3)// only for version 3+
 				{
 				if($woocommerce_loop['columns'] == 6) 
@@ -388,8 +367,6 @@ $woocommerce_loop = array('loop'=>0,'columns' => ($columns)?$columns:get_option(
 /* double check */
 if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_array($woocommerce_loop['columns'],array(5,7)))) { return; }
 
-// Ensure visibility
-//if ( ! $product->is_visible() )	return;
 
 // Increase loop count
 $woocommerce_loop['loop']++;

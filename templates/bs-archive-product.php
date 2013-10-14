@@ -44,9 +44,6 @@ get_header('shop'); ?>
 				 */
 				//do_action( 'woocommerce_before_shop_loop' );
 				do_action( 'shop_loop' );
-	
-
-
 				/**
 				 * woocommerce_after_shop_loop hook
 				 *

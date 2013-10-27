@@ -389,7 +389,7 @@ $woocommerce_loop['loop']++;
 				if($product)
 				{
 				
-					?><div class="container products"><div class="row"><?php
+					?><div class="clearfix"></div><div class="container products"><div class="row"><?php
 				
 					while ( $product->have_posts()) : $product->the_post(); 
 				    bs_product_loop($woocommerce_loop,$classes,$template);
@@ -398,7 +398,7 @@ $woocommerce_loop['loop']++;
 				}	
 				else
 				{
-					?><div class="container products"><div class="row"><?php
+					?><div class="clearfix"></div><div class="container products"><div class="row"><?php
 					
 					while ( have_posts() ) : the_post(); 
 					bs_product_loop($woocommerce_loop,$classes);
@@ -431,8 +431,8 @@ function my_template_redirect(){
    is_shop() || 
    is_product_category()
    
-   ) {
-    
+   ) 
+   {
     if(file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/bs-archive-product.php' ))
 	{
 		 include($template);
@@ -461,10 +461,11 @@ add_action('template_redirect','my_template_redirect');
 // --  PLUGIN HOOKS  --
 // --------------------
 
-remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
-remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
+//remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
+//remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
 add_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper_bs', 10 );
 add_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end_bs', 10 );
+
 
 if ( ! function_exists( 'woocommerce_output_content_wrapper_bs' ) ) {
 
@@ -584,7 +585,7 @@ elseif($woocommerce_loop['columns']>2)
 add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 12;' ), 10 );
 }
 
-add_action('woocommerce_before_shop_loop','setupgrid');
+add_action('woocommerce_before_shop_loop','setupgrid',40);
 
 function setupgrid()
 {

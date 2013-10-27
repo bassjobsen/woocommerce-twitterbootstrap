@@ -41,15 +41,18 @@ get_header('shop'); ?>
 				 *
 				 * @hooked woocommerce_result_count - 20
 				 * @hooked woocommerce_catalog_ordering - 30
+				 * @hooked setup grid - 40
 				 */
-				//do_action( 'woocommerce_before_shop_loop' );
+				do_action( 'woocommerce_before_shop_loop' );
+				
+				
 				do_action( 'shop_loop' );
 				/**
 				 * woocommerce_after_shop_loop hook
 				 *
 				 * @hooked woocommerce_pagination - 10
 				 */
-				//do_action( 'woocommerce_after_shop_loop' );
+				do_action( 'woocommerce_after_shop_loop' );
 
 			 echo '<div class="woocommerce">' . ob_get_clean() . '</div>';
 			 

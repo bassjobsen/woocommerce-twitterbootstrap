@@ -20,6 +20,13 @@
 		padding-left: 15px;
 	}
 }
+@media (max-width: 767px)
+{ 
+	.woocommerce .woocommerce-ordering, .woocommerce-page .woocommerce-ordering 
+	{
+		width: 100%;
+	}
+}
 .woocommerce div.container.products div.row [class^="col-"] {margin-bottom: 3em !important;}
 /* from less */
 div.products h3{padding:.5em 0;margin:0;font-size:1em}

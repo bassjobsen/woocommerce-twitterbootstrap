@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.1
+Version: 1.11
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -222,20 +222,18 @@ return '<div class="woocommerce">' . ob_get_clean() . '</div>';
 
 function init()
 {
-if( !function_exists( 'bssetstylesheets' ) ):
-
 remove_shortcode( 'featured_products' );
 add_shortcode( 'featured_products', array($this, 'featured_products' ));
 remove_shortcode( 'recent_products' );
 add_shortcode( 'recent_products', array($this, 'recent_products' ));
-
-function bssetstylesheets()
+if( !function_exists( 'woocommerce_twitterbootstrap_setstylesheets' ) ):
+function woocommerce_twitterbootstrap_setstylesheets()
 {
 	wp_register_style ( 'woocommerce-twitterbootstrap', plugins_url( 'css/woocommerce-twitterboostrap.css' , __FILE__ ), 'woocommerce' );
     wp_enqueue_style ( 'woocommerce-twitterbootstrap');
 }
 endif;	
-add_action( 'wp_enqueue_scripts', 'bssetstylesheets', 99 );
+add_action( 'wp_enqueue_scripts', 'woocommerce_twitterbootstrap_setstylesheets', 99 );
 
 function get_grid_classes($woocommerce_loop)
 {
@@ -368,28 +366,18 @@ $woocommerce_loop = array('loop'=>0,'columns' => ($columns)?$columns:get_option(
 if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_array($woocommerce_loop['columns'],array(5,7)))) { return; }
 
 
-// Increase loop count
-$woocommerce_loop['loop']++;
+				// Increase loop count
+				$woocommerce_loop['loop']++;
 
-				
-				
-				
-				
-				
-				?>
 
-				<?php //woocommerce_product_loop_start(); ?>
-
-				<?php woocommerce_product_subcategories(); ?>
-
-				<?php 
+				woocommerce_product_subcategories(); 
 				
 				$classes = get_grid_classes($woocommerce_loop);
 				
 				if($product)
 				{
 				
-					?><div class="clearfix"></div><div class="container products"><div class="row"><?php
+					?><div class="clearfix"></div><div class="products"><div class="row"><?php
 				
 					while ( $product->have_posts()) : $product->the_post(); 
 				    bs_product_loop($woocommerce_loop,$classes,$template);
@@ -398,7 +386,7 @@ $woocommerce_loop['loop']++;
 				}	
 				else
 				{
-					?><div class="clearfix"></div><div class="container products"><div class="row"><?php
+					?><div class="clearfix"></div><div class="products"><div class="row"><?php
 					
 					while ( have_posts() ) : the_post(); 
 					bs_product_loop($woocommerce_loop,$classes);
@@ -489,7 +477,6 @@ if ( ! function_exists( 'woocommerce_output_content_wrapper_end_bs' ) ) {
 	 * @return void
 	 */
 	function woocommerce_output_content_wrapper_end_bs() {
-		//echo 'THE END';
 		woocommerce_get_template( 'shop/wrapper-end.php' );
 	}
 }
@@ -508,7 +495,7 @@ function woocommerce_before_single_product_summary_bs() {
 		$bssingleproductclass = 'col-sm-6';
 	}	
 	
-	echo '<div class="container"><div class="row"><div class="'.$bssingleproductclass.' bssingleproduct">'; 
+	echo '<div class="row"><div class="'.$bssingleproductclass.' bssingleproduct">'; 
 	
 	}
 
@@ -519,7 +506,6 @@ function woocommerce_before_single_product_summary_bs_end() { echo '</div>
 
 add_action( 'woocommerce_after_single_product_summary', 'woocommerce_after_single_product_summary_bs', 1 );
 function woocommerce_after_single_product_summary_bs() { echo '</div>	
-</div>
 </div>'; }
 
 /* thumbnails */
@@ -643,4 +629,3 @@ if(class_exists('WooCommerce_Twitter_Bootstrap'))
 	}
 	
 }
-

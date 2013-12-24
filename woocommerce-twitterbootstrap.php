@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.11
+Version: 1.12
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -32,8 +32,6 @@ License: GPLv2
  **/
 if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) 
 {
-	
-	
 // Put your plugin code here
 die('install Woocommerce First');
 }
@@ -411,49 +409,6 @@ if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_ar
 }	
 
 
-function my_template_redirect(){
-   //pages you want to make true, ex. is_shop()
-   global $woocommerce;
-
-   if(
-   is_shop() || 
-   is_product_category()
-   
-   ) 
-   {
-    if(file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/bs-archive-product.php' ))
-	{
-		 include($template);
-	}	
-    else
-    {
-    $plugin_dir = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) );
-    load_template($plugin_dir . 'templates/bs-archive-product.php');
-	}
-    exit;
-   }
-   /*else if(is_product_category())
-   {
-	   load_template($plugin_dir . 'templates/bs-content-product_cat.php');
-	   exit;
-   }*/	   
-   
-}
-
-add_action('template_redirect','my_template_redirect');
-	
-
-	
-	
-// --------------------
-// --  PLUGIN HOOKS  --
-// --------------------
-
-//remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
-//remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
-add_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper_bs', 10 );
-add_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end_bs', 10 );
-
 
 if ( ! function_exists( 'woocommerce_output_content_wrapper_bs' ) ) {
 
@@ -465,7 +420,7 @@ if ( ! function_exists( 'woocommerce_output_content_wrapper_bs' ) ) {
 	 */
 	function woocommerce_output_content_wrapper_bs() {
 
-		woocommerce_get_template( 'shop/wrapper-start.php' );
+		//woocommerce_get_template( 'shop/wrapper-start.php' );
 	}
 }
 if ( ! function_exists( 'woocommerce_output_content_wrapper_end_bs' ) ) {
@@ -477,7 +432,7 @@ if ( ! function_exists( 'woocommerce_output_content_wrapper_end_bs' ) ) {
 	 * @return void
 	 */
 	function woocommerce_output_content_wrapper_end_bs() {
-		woocommerce_get_template( 'shop/wrapper-end.php' );
+		//woocommerce_get_template( 'shop/wrapper-end.php' );
 	}
 }
 
@@ -571,32 +526,18 @@ elseif($woocommerce_loop['columns']>2)
 add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 12;' ), 10 );
 }
 
-add_action('woocommerce_before_shop_loop','setupgrid',40);
+add_action('woocommerce_after_shop_loop','endsetupgrid',1);
+add_action('woocommerce_before_shop_loop','setupgrid',999);
+function endsetupgrid()
+{
+	ob_end_clean();
+	bs_shop_loop();
+}	
 
 function setupgrid()
 {
-
-global $woocommerce_loop;
-
-/* set up grid variables */
-
-
-// Store loop count we're currently on
-if ( empty( $woocommerce_loop['loop'] ) )
-	$woocommerce_loop['loop'] = 0;
-
-
-	
-if($woocommerce_loop['columns']!=31 && ($woocommerce_loop['columns']>6 || in_array($woocommerce_loop['columns'],array(5,7)))) 
-{
-echo '<div class="alert alert-error">
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-  Wrong number of columns.
-</div>';
+ob_start();
 }
-
-}
-
 }
 
 

@@ -33,7 +33,7 @@
 	$tbversion = (get_option('tbversion'))?get_option('tbversion'):3;
 	?>
 	<input type="radio" value="2" name="tbversion" <?php echo ($tbversion==2)?' checked="checked"':''?>>Twitter's Bootstrap 2.x (2.3.2)<br>
-	<input type="radio" value="3" name="tbversion"<?php echo ($tbversion==3)?' checked="checked"':''?>>Twitter's Bootstrap 3.0<br>
+	<input type="radio" value="3" name="tbversion"<?php echo ($tbversion==3)?' checked="checked"':''?>>Twitter's Bootstrap 3.x<br>
 </td> 
 </tr> 
 

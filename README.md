@@ -71,6 +71,7 @@ This will be result in the grids shown below:
 Template overwriting
 --------------------
 Copy the templates from wp-content/plugins/woocommerce-twitter/templates/ to wp-content/themes/{your(child)theme}/woocommerce-twitter/. Edit the templates to adopt them to your needs now.
+When a product does not have a featured image placeholder.php sets a placeholder image. This template can be overwritten too. 
 
 Shortcodes
 ----------
@@ -88,6 +89,33 @@ Requirements
 * [Wordpress](http://wordpress.org/download/) tested with >= 3.6
 * [Twitter's Bootstrap](http://getboostrap.com/) >= 3.0.0 (Twitter's Bootstrap 2 tested with v2.3.2.)
 * [WooCommerce](http://wordpress.org/plugins/woocommerce/) tested with >= 2.0.13
+
+Theme integration
+-----------------
+
+To use this plugin in your themes copy the files to for example `{wordpress}/wp-contents/themes/{yourtheme}/vendor/` and add according to this the code below to your `functions.php`:
+
+	if( !function_exists( 'wts' ) ):
+	function wts()
+	{
+	wp_deregister_style ( 'woocommerce-twitterbootstrap');	
+	wp_dequeue_style( 'woocommerce-twitterbootstrap');
+	wp_register_style ( 'woocommerce-twitterbootstrap', get_stylesheet_directory_uri() . '/vendor/woocommerce-twitterbootstrap/css/woocommerce-twitterboostrap.css', 'woocommerce' );
+	wp_enqueue_style( 'woocommerce-twitterbootstrap');
+	}
+	endif;	
+	add_action( 'wp_enqueue_scripts', 'wts', 200 ); 
+
+
+	remove_action('admin_menu',array($woocommercetwitterbootstrap,'add_menu'));
+	add_action('admin_menu','woocommerce_twitterbootstrap_add_menu');
+	/** * add a menu */ 
+	function woocommerce_twitterbootstrap_add_menu() 
+	{
+		 global $woocommercetwitterbootstrap;
+		 add_theme_page('WooCommerce Twitter Bootstrap Settings', 'WooCommerce Bootstrap', 'manage_options', 'woocommerce-twitterbootstrap', array($woocommercetwitterbootstrap, 'plugin_settings_page'));
+	} // END public function add_menu()
+	
 
 Support
 -------

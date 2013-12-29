@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: WooCommerce, Twitter's Bootstrap, responsive
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: 1.12
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,33 @@ This will be result in the grids shown below:
 
 </pre>
 
+Theme integration
+-----------------
+
+To use this plugin in your themes copy the files to for example `{wordpress}/wp-contents/themes/{yourtheme}/vendor/` and add according to this the code below to your `functions.php`:
+
+	if( !function_exists( 'wts' ) ):
+	function wts()
+	{
+	wp_deregister_style ( 'woocommerce-twitterbootstrap');	
+	wp_dequeue_style( 'woocommerce-twitterbootstrap');
+	wp_register_style ( 'woocommerce-twitterbootstrap', get_stylesheet_directory_uri() . '/vendor/woocommerce-twitterbootstrap/css/woocommerce-twitterboostrap.css', 'woocommerce' );
+	wp_enqueue_style( 'woocommerce-twitterbootstrap');
+	}
+	endif;	
+	add_action( 'wp_enqueue_scripts', 'wts', 200 ); 
+
+
+	remove_action('admin_menu',array($woocommercetwitterbootstrap,'add_menu'));
+	add_action('admin_menu','woocommerce_twitterbootstrap_add_menu');
+	/** * add a menu */ 
+	function woocommerce_twitterbootstrap_add_menu() 
+	{
+		 global $woocommercetwitterbootstrap;
+		 add_theme_page('WooCommerce Twitter Bootstrap Settings', 'WooCommerce Bootstrap', 'manage_options', 'woocommerce-twitterbootstrap', array($woocommercetwitterbootstrap, 'plugin_settings_page'));
+	} // END public function add_menu()
+
+
 Contribute!
 -----------
 If you have suggestions for a new feature or improvement, feel free to contact us on [Twitter](http://twitter.com/JamedoWebsites). Alternatively, you can fork the plugin from [Github](https://github.com/bassjobsen/woocommerce-twitterbootstrap).
@@ -91,6 +118,10 @@ If you have suggestions for a new feature or improvement, feel free to contact u
 1. Settings panel of WooCommerce Twitter's Bootstrap
 
 == Changelog ==
+
+= 1.2 =
+* placeholder image
+* theme integration
 
 = 1.1 =
 * All items in one row with responsive column reset see: http://getbootstrap.com/css/#grid-responsive-resets
@@ -119,4 +150,4 @@ We are always happy to help you. If you have any question regarding this code. [
 
 == Todo ==
 
-* Make template available in the theme for overwriting and customizing
+* Make Cart and Check out pages responsive too

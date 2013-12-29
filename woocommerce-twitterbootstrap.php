@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.12
+Version: 1.2
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -55,7 +55,7 @@ public function __construct()
 	
 	
 	
-	add_filter( 'init', array( $this, 'init' ) );
+	add_filter( 'init', array(&$this, 'init' ) );
 } 
 // END public 
 
@@ -101,7 +101,7 @@ public function init_settings()
 
 
 /** * add a menu */ 
-public function add_menu() 
+public static function add_menu() 
 {
 	 
 	 add_options_page('WooCommerce Twitter Bootstrap Settings', 'WooCommerce Bootstrap', 'manage_options', 'woocommerce-twitterbootstrap', array(&$this, 'plugin_settings_page'));
@@ -117,10 +117,60 @@ public function plugin_settings_page()
 	} 
 // Render the settings template 
 
-include(sprintf("%s/templates/settings.php", dirname(__FILE__))); 
-
+//include(sprintf("%s/templates/settings.php", dirname(__FILE__))); 
+	$this->showform();
 } 
 // END public function plugin_settings_page() 
+
+function showform()
+{
+?>
+<div class="wrap"> 
+
+<h2>WooCommerce Twitter Bootstrap <?php echo __('Settings','wootb');?></h2> 
+
+<form method="post" action="options.php"> 
+<?php settings_fields('woocommerce-twitterbootstrap-group'); ?> 
+<table class="form-table"> 
+<tr valign="top"> 
+<th scope="row">
+<label for="setting_a"><?php echo __('Number of columns per row','wootb');?></label></th> 
+<td>
+	<select name="number_of_columns" id="number_of_columns">
+	
+	<?php
+	
+	$numberofcolumns = (get_option('number_of_columns'))?get_option('number_of_columns'):4;
+	
+	foreach(array(1,2,3,4,6) as $number)
+	{
+		?><option value="<?php echo $number ?>" <?php echo ($numberofcolumns==$number)?' selected="selected"':''?>><?php echo $number ?></option><?php
+	}	
+	?>
+	</select>
+</td> 
+</tr> 
+
+<tr valign="top"> 
+<th scope="row">
+<label for="tbversion"><?php echo __('Twitter\'s Bootstrap version','wootb');?></label></th> 
+<td>
+	<?php
+	$tbversion = (get_option('tbversion'))?get_option('tbversion'):3;
+	?>
+	<input type="radio" value="2" name="tbversion" <?php echo ($tbversion==2)?' checked="checked"':''?>>Twitter's Bootstrap 2.x (2.3.2)<br>
+	<input type="radio" value="3" name="tbversion"<?php echo ($tbversion==3)?' checked="checked"':''?>>Twitter's Bootstrap 3.x<br>
+</td> 
+</tr> 
+
+</table> 
+<?php submit_button(); ?> </form> 
+</div>
+<?
+}	
+	
+
+
 
 /**
  * Output featured products
@@ -464,15 +514,29 @@ function woocommerce_after_single_product_summary_bs() { echo '</div>
 </div>'; }
 
 /* thumbnails */
-
+add_action('bs_before_shop_loop_item_title','woocommerce_show_product_loop_sale_flash',10);
 add_action('bs_before_shop_loop_item_title','bs_get_product_thumbnail',10,3);
 function bs_get_product_thumbnail()
 {
 
 global $post;
+$thumbnail = get_the_post_thumbnail($post->ID, 'medium');
+if(empty($thumbnail))
+{
+	
+	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/placeholder.php' ))
+	{
+					 $template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/placeholder.php';
+	}	
+	
 
+				include($template);
+	
+	
+	return;
+}	
 $doc = new DOMDocument();
-$doc->loadHTML(get_the_post_thumbnail($post->ID, 'medium'));
+$doc->loadHTML($thumbnail);
 $images = $doc->getElementsByTagName('img');
 foreach ($images as $image) {
 $image->setAttribute('class',$image->getAttribute('class').' img-responsive');

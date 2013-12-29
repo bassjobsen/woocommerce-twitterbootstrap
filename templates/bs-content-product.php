@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 			 * @hooked woocommerce_show_product_loop_sale_flash - 10
 			 * @hooked woocommerce_template_loop_product_thumbnail - 10
 			 */
+			 
 			do_action( 'bs_before_shop_loop_item_title' ); 
 		?>
 
@@ -38,7 +39,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 			do_action( 'woocommerce_after_shop_loop_item_title' );
 		?>
 
-	</a></div>
+	</a>
 
 	<?php do_action( 'woocommerce_after_shop_loop_item' ); ?>
+	</div>
 </div>

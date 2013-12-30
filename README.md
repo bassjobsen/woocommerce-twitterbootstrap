@@ -82,7 +82,11 @@ Attributes to use with the shortcodes:
 * `columns` the number of columns in your grid (see the table above). This argument overwrites the number of columns from the 
 settings. Note use 31 here to use the 3-2-1 layout (12 items per page); 
 * `per_page` sets the number of items you want to show (overwrites the settings)
-* 
+
+CSS
+---
+The plugin provides some CSS classes to mimic the default WooCommerce settings. Of course you can overwrite these.
+Also see: [Centering product elements on Shop page](http://www.primathemes.com/documentation/centering-product-elements-on-shop-page/)
 
 Requirements
 ------------

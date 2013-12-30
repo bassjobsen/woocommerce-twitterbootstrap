@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.2
+Version: 1.21
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -33,16 +33,15 @@ License: GPLv2
 if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) 
 {
 // Put your plugin code here
-die('install Woocommerce First');
+//die('install Woocommerce First');
 }
-
-	
 
 if(!class_exists('WooCommerce_Twitter_Bootstrap')) 
 { 
 	
 class WooCommerce_Twitter_Bootstrap 
 { 
+	
 /*
 * Construct the plugin object 
 */ 
@@ -52,12 +51,73 @@ public function __construct()
  	// register actions 
 	add_action('admin_init', array(&$this, 'admin_init')); 
 	add_action('admin_menu', array(&$this, 'add_menu')); 
-	
-	
-	
 	add_filter( 'init', array(&$this, 'init' ) );
+	
+	$plugin = plugin_basename(__FILE__); 
+	add_filter("plugin_action_links_$plugin", array( $this,'plugin_settings_link')); 
 } 
 // END public 
+
+function init()
+{
+remove_shortcode( 'featured_products' );
+add_shortcode( 'featured_products', array(&$this, 'featured_products' ));
+remove_shortcode( 'recent_products' );
+add_shortcode( 'recent_products', array(&$this, 'recent_products' ));
+
+add_action( 'wp_enqueue_scripts', array(&$this, 'woocommerce_twitterbootstrap_setstylesheets'), 99 );
+add_action( 'shop_loop', array($this, 'bs_shop_loop'), 99 );
+add_action( 'woocommerce_before_single_product_summary', array(&$this, 'woocommerce_before_single_product_summary_bs'), 1 );
+add_action( 'woocommerce_before_single_product_summary', array(&$this, 'woocommerce_before_single_product_summary_bs_end'), 100 );
+add_action( 'woocommerce_after_single_product_summary', array(&$this, 'woocommerce_after_single_product_summary_bs'), 1 );
+/* thumbnails */
+add_action('bs_before_shop_loop_item_title','woocommerce_show_product_loop_sale_flash',10);
+add_action('bs_before_shop_loop_item_title',array(&$this, 'bs_get_product_thumbnail'),10,3);
+add_action('woocommerce_after_shop_loop',array(&$this, 'endsetupgrid'),1);
+add_action('woocommerce_before_shop_loop',array(&$this, 'setupgrid'),999);
+
+/* the grid display */
+/*
+|  	columns		| mobile 	| tablet 	| desktop	|per page 	|
+----------------------------------------------------|-----------|
+|		1		|	1		|	1		|	1		| 	10		|
+|---------------------------------------------------|-----------|
+|		2		|	1		|	2		|	2		|	10		|
+|---------------------------------------------------|-----------|
+|		3		|	1		|	1		|	3		|	 9		|
+|---------------------------------------------------|-----------|
+|		3(1)	|	1		|	2		|	3		|	12		|
+|---------------------------------------------------|-----------|
+|		4		|	1		|	2		|	4		|	12		|
+|---------------------------------------------------|-----------|
+|		5		|	n/a		|	n/a		|	n/a		|	n/a	    |
+|---------------------------------------------------|-----------|
+|		6		|	2		|	4		|	6		|	12		|
+|---------------------------------------------------|-----------|
+|		>=6		|	n/a		|	n/a		|	n/a		|	n/a		|
+|---------------------------------------------------------------|
+
+*/
+
+// Store column count for displaying the grid
+global $woocommerce_loop;
+
+if ( empty( $woocommerce_loop['columns'] ) )
+{
+$woocommerce_loop['columns'] = get_option('number_of_columns', 4 );	
+}
+
+
+if($woocommerce_loop['columns']==3)
+{
+	add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 9;' ), 10 );
+}	
+elseif($woocommerce_loop['columns']>2)
+{
+	add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 12;' ), 10 );
+}
+
+}
 
 /** 
  * Activate the plugin 
@@ -73,15 +133,14 @@ public static function activate()
  * 
 **/ 
 public static function deactivate() 
-
-{ // Do nothing 
+{ 
+	// Do nothing 
 } 
 // END public static function deactivate 
 
 /** 
  * hook into WP's admin_init action hook 
  * */ 
- 
 public function admin_init() 
 { 
 	// Set up the settings for this plugin 
@@ -101,9 +160,8 @@ public function init_settings()
 
 
 /** * add a menu */ 
-public static function add_menu() 
+public function add_menu() 
 {
-	 
 	 add_options_page('WooCommerce Twitter Bootstrap Settings', 'WooCommerce Bootstrap', 'manage_options', 'woocommerce-twitterbootstrap', array(&$this, 'plugin_settings_page'));
 } // END public function add_menu() 
 
@@ -115,9 +173,9 @@ public function plugin_settings_page()
 		wp_die(__('You do not have sufficient permissions to access this page.')); 
 	
 	} 
-// Render the settings template 
-
-//include(sprintf("%s/templates/settings.php", dirname(__FILE__))); 
+	
+	// Render the settings template 
+    //include(sprintf("%s/templates/settings.php", dirname(__FILE__))); 
 	$this->showform();
 } 
 // END public function plugin_settings_page() 
@@ -168,10 +226,6 @@ function showform()
 </div>
 <?
 }	
-	
-
-
-
 /**
  * Output featured products
  *
@@ -179,7 +233,8 @@ function showform()
  * @param array $atts
  * @return string
  */
-function featured_products( $atts ) {
+function featured_products( $atts ) 
+{
 
 extract(shortcode_atts(array(
 'per_page' => 12,
@@ -212,7 +267,6 @@ array(
 return $this->showproductspeciallist($args,$content_product_template,$columns);
 
 }
-
 /**
  * Recent Products shortcode
  *
@@ -220,7 +274,8 @@ return $this->showproductspeciallist($args,$content_product_template,$columns);
  * @param array $atts
  * @return string
  */
-public function recent_products( $atts ) {
+public function recent_products( $atts ) 
+{
 
 global $woocommerce;
 
@@ -247,7 +302,6 @@ $args = array(
 return $this->showproductspeciallist($args,$content_product_template,$columns);
 
 }
-
 function showproductspeciallist($args,$content_product_template,$columns=null)
 {
 	
@@ -260,29 +314,17 @@ $woocommerce_loop['columns'] = ($columns)?$columns:get_option( 'number_of_column
 
 if ( $products->have_posts() ) 
 {
-bs_shop_loop($products,$content_product_template,$columns);	
+$this->bs_shop_loop($products,$content_product_template,$columns);	
 }
 
 wp_reset_postdata();
 return '<div class="woocommerce">' . ob_get_clean() . '</div>';
 }	
-
-
-function init()
-{
-remove_shortcode( 'featured_products' );
-add_shortcode( 'featured_products', array($this, 'featured_products' ));
-remove_shortcode( 'recent_products' );
-add_shortcode( 'recent_products', array($this, 'recent_products' ));
-if( !function_exists( 'woocommerce_twitterbootstrap_setstylesheets' ) ):
 function woocommerce_twitterbootstrap_setstylesheets()
 {
 	wp_register_style ( 'woocommerce-twitterbootstrap', plugins_url( 'css/woocommerce-twitterboostrap.css' , __FILE__ ), 'woocommerce' );
     wp_enqueue_style ( 'woocommerce-twitterbootstrap');
 }
-endif;	
-add_action( 'wp_enqueue_scripts', 'woocommerce_twitterbootstrap_setstylesheets', 99 );
-
 function get_grid_classes($woocommerce_loop)
 {
 /* the grid display */
@@ -356,8 +398,6 @@ switch($woocommerce_loop['columns'])
 }
 return $classes;
 }
-
-
 function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-product')
 {
 	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/'.$template.'.php' ))
@@ -401,9 +441,6 @@ function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-produ
 				
 
 }	
-
-add_action( 'shop_loop', 'bs_shop_loop', 99 );
-
 function bs_shop_loop($product=null,$template='bs-content-product',$columns=null)
 {
 
@@ -420,7 +457,7 @@ if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_ar
 
 				woocommerce_product_subcategories(); 
 				
-				$classes = get_grid_classes($woocommerce_loop);
+				$classes = $this->get_grid_classes($woocommerce_loop);
 				
 				if($product)
 				{
@@ -428,7 +465,7 @@ if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_ar
 					?><div class="clearfix"></div><div class="products"><div class="row"><?php
 				
 					while ( $product->have_posts()) : $product->the_post(); 
-				    bs_product_loop($woocommerce_loop,$classes,$template);
+				    $this->bs_product_loop($woocommerce_loop,$classes,$template);
 					endwhile; 
 					
 				}	
@@ -437,7 +474,7 @@ if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_ar
 					?><div class="clearfix"></div><div class="products"><div class="row"><?php
 					
 					while ( have_posts() ) : the_post(); 
-					bs_product_loop($woocommerce_loop,$classes);
+					$this->bs_product_loop($woocommerce_loop,$classes);
 					endwhile;
 					
 				}				
@@ -445,12 +482,13 @@ if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_ar
 				if ( 0 != ($woocommerce_loop['loop']-1) % $woocommerce_loop['columns'] )
 				{
 	
-				?><div class="<?php echo $classes?>"></div><?php				
-				while ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
-				{
-					$woocommerce_loop['loop']++;
-					?><div class="<?php echo $classes?>"></div><?php
-				}
+				?><div class="<?php echo $classes?>"></div><?php
+								
+					while ( 0 != $woocommerce_loop['loop'] % $woocommerce_loop['columns'] )
+					{
+						$woocommerce_loop['loop']++;
+						?><div class="<?php echo $classes?>"></div><?php
+					}
 
 				}	
 				
@@ -459,8 +497,6 @@ if($woocommerce_loop['columns']!=31 && ( $woocommerce_loop['columns']>6 || in_ar
 }	
 
 
-
-if ( ! function_exists( 'woocommerce_output_content_wrapper_bs' ) ) {
 
 	/**
 	 * Output the start of the page wrapper.
@@ -472,8 +508,6 @@ if ( ! function_exists( 'woocommerce_output_content_wrapper_bs' ) ) {
 
 		//woocommerce_get_template( 'shop/wrapper-start.php' );
 	}
-}
-if ( ! function_exists( 'woocommerce_output_content_wrapper_end_bs' ) ) {
 
 	/**
 	 * Output the end of the page wrapper.
@@ -484,12 +518,11 @@ if ( ! function_exists( 'woocommerce_output_content_wrapper_end_bs' ) ) {
 	function woocommerce_output_content_wrapper_end_bs() {
 		//woocommerce_get_template( 'shop/wrapper-end.php' );
 	}
-}
 
 
 
-add_action( 'woocommerce_before_single_product_summary', 'woocommerce_before_single_product_summary_bs', 1 );
-function woocommerce_before_single_product_summary_bs() { 
+function woocommerce_before_single_product_summary_bs() 
+{ 
 	
 	if(get_option( 'tbversion', 3 )==2)
 	{
@@ -502,23 +535,22 @@ function woocommerce_before_single_product_summary_bs() {
 	
 	echo '<div class="row"><div class="'.$bssingleproductclass.' bssingleproduct">'; 
 	
-	}
+}
 
 
-add_action( 'woocommerce_before_single_product_summary', 'woocommerce_before_single_product_summary_bs_end', 100 );
-function woocommerce_before_single_product_summary_bs_end() { echo '</div>	
-<div class="col-sm-6 bssingleproduct">'; }
 
-add_action( 'woocommerce_after_single_product_summary', 'woocommerce_after_single_product_summary_bs', 1 );
-function woocommerce_after_single_product_summary_bs() { echo '</div>	
-</div>'; }
+function woocommerce_before_single_product_summary_bs_end() 
+{ echo '</div>	
+<div class="col-sm-6 bssingleproduct">'; 
+}
 
-/* thumbnails */
-add_action('bs_before_shop_loop_item_title','woocommerce_show_product_loop_sale_flash',10);
-add_action('bs_before_shop_loop_item_title','bs_get_product_thumbnail',10,3);
+function woocommerce_after_single_product_summary_bs() 
+{ echo '</div>	
+</div>'; 
+}
+
 function bs_get_product_thumbnail()
 {
-
 global $post;
 $thumbnail = get_the_post_thumbnail($post->ID, 'medium');
 if(empty($thumbnail))
@@ -528,13 +560,10 @@ if(empty($thumbnail))
 	{
 					 $template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/placeholder.php';
 	}	
-	
-
-				include($template);
-	
-	
+	include($template);
 	return;
-}	
+}
+	
 $doc = new DOMDocument();
 $doc->loadHTML($thumbnail);
 $images = $doc->getElementsByTagName('img');
@@ -548,66 +577,26 @@ echo utf8_decode($doc->saveXML($image)); break;
 
 }	
 
-
-/* the grid display */
-/*
-|  	columns		| mobile 	| tablet 	| desktop	|per page 	|
-----------------------------------------------------|-----------|
-|		1		|	1		|	1		|	1		| 	10		|
-|---------------------------------------------------|-----------|
-|		2		|	1		|	2		|	2		|	10		|
-|---------------------------------------------------|-----------|
-|		3		|	1		|	1		|	3		|	 9		|
-|---------------------------------------------------|-----------|
-|		3(1)	|	1		|	2		|	3		|	12		|
-|---------------------------------------------------|-----------|
-|		4		|	1		|	2		|	4		|	12		|
-|---------------------------------------------------|-----------|
-|		5		|	n/a		|	n/a		|	n/a		|	n/a	    |
-|---------------------------------------------------|-----------|
-|		6		|	2		|	4		|	6		|	12		|
-|---------------------------------------------------|-----------|
-|		>=6		|	n/a		|	n/a		|	n/a		|	n/a		|
-|---------------------------------------------------------------|
-
-*/
-
-// Store column count for displaying the grid
-global $woocommerce_loop;
-
-if ( empty( $woocommerce_loop['columns'] ) )
-{
-$woocommerce_loop['columns'] = get_option('number_of_columns', 4 );	
-}
-
-
-if($woocommerce_loop['columns']==3)
-{
-	add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 9;' ), 10 );
-}	
-elseif($woocommerce_loop['columns']>2)
-{
-add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 12;' ), 10 );
-}
-
-add_action('woocommerce_after_shop_loop','endsetupgrid',1);
-add_action('woocommerce_before_shop_loop','setupgrid',999);
 function endsetupgrid()
 {
 	ob_end_clean();
-	bs_shop_loop();
+	$this->bs_shop_loop();
 }	
 
 function setupgrid()
 {
 ob_start();
 }
-}
 
+function plugin_settings_link($links) 
+{ 
+$settings_link = '<a href="options-general.php?page=woocommerce-twitterbootstrap">Settings</a>';
+array_unshift($links, $settings_link); 
+return $links; 
+} 
 
 
 } // END class 
-
 }
 
 if(class_exists('WooCommerce_Twitter_Bootstrap')) 
@@ -615,22 +604,5 @@ if(class_exists('WooCommerce_Twitter_Bootstrap'))
 	register_activation_hook(__FILE__, array('WooCommerce_Twitter_Bootstrap', 'activate')); 
 	register_deactivation_hook(__FILE__, array('WooCommerce_Twitter_Bootstrap', 'deactivate')); 
 	
-	$woocommercetwitterbootstrap = new WooCommerce_Twitter_Bootstrap();
-	// Add a link to the settings page onto the plugin page 
-	if(isset($woocommercetwitterbootstrap))
-	{
-		
-		 function plugin_settings_link($links) 
-		 { 
-			 $settings_link = '<a href="options-general.php?page=woocommerce-twitterbootstrap">Settings</a>';
-			 array_unshift($links, $settings_link); 
-			
-			 return $links; 
-		 } 	
-		 $plugin = plugin_basename(__FILE__); 
-		 	
-		
-		 add_filter("plugin_action_links_$plugin", 'plugin_settings_link'); 
-	}
-	
+	new WooCommerce_Twitter_Bootstrap();
 }

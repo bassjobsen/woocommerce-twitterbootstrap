@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: WooCommerce, Twitter's Bootstrap, responsive
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: 1.2
+Stable tag: 1.21
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,11 @@ If you have suggestions for a new feature or improvement, feel free to contact u
 
 == Frequently Asked Questions ==
 
+== Frequently Asked Questions ==
+
+= How to Center the product elements on Shop page =
+
+See: [Centering product elements on Shop page](http://www.primathemes.com/documentation/centering-product-elements-on-shop-page/)
 
 == Screenshots ==
 

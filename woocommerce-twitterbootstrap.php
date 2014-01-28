@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.22
+Version: 1.3.0
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -158,6 +158,7 @@ public function init_settings()
 	// register the settings for this plugin 
 	register_setting('woocommerce-twitterbootstrap-group', 'number_of_columns'); 
 	register_setting('woocommerce-twitterbootstrap-group', 'tbversion'); 
+	register_setting('woocommerce-twitterbootstrap-group', 'wootb_size'); 
 } // END public function init_custom_settings()
 
 
@@ -220,6 +221,23 @@ function showform()
 	?>
 	<input type="radio" value="2" name="tbversion" <?php echo ($tbversion==2)?' checked="checked"':''?>>Twitter's Bootstrap 2.x (2.3.2)<br>
 	<input type="radio" value="3" name="tbversion"<?php echo ($tbversion==3)?' checked="checked"':''?>>Twitter's Bootstrap 3.x<br>
+</td> 
+</tr> 
+
+
+<tr valign="top"> 
+<th scope="row">
+<label for="wootb_size"><?php echo __('Image size','wootb');?></label></th> 
+<td>
+<p><?php echo __('Either a string keyword (thumbnail, medium, large or full) or a 2-item array representing width and height in pixels, e.g. array(32,32).','wootb');?></p>	
+	<?php
+	
+	$wootb_size = (get_option('wootb_size'))?get_option('wootb_size'):'medium';
+	
+
+	?>
+	<input type="text" value="<?php echo $wootb_size; ?>" name="wootb_size" id="wootb_size">
+
 </td> 
 </tr> 
 
@@ -557,7 +575,14 @@ function woocommerce_after_single_product_summary_bs()
 function bs_get_product_thumbnail()
 {
 global $post;
-$thumbnail = get_the_post_thumbnail($post->ID, 'medium');
+$wootb_size = get_option( 'wootb_size', 'medium');
+
+if(preg_match('/array\(.+\);?/',$wootb_size))
+{
+eval('$wootb_size='.str_replace(';','',$wootb_size).';');
+}
+
+$thumbnail = get_the_post_thumbnail($post->ID,$wootb_size );
 if(empty($thumbnail))
 {
 	
@@ -570,14 +595,14 @@ if(empty($thumbnail))
 }
 	
 $doc = new DOMDocument();
-$doc->loadHTML($thumbnail);
+$doc->loadHTML('<?xml encoding="'.DB_CHARSET.'">' . $thumbnail );
 $images = $doc->getElementsByTagName('img');
 foreach ($images as $image) {
 $image->setAttribute('class',$image->getAttribute('class').' img-responsive');
 $image->removeAttribute('height');
 $image->removeAttribute('width');
 //see: http://stackoverflow.com/questions/6321481/printing-out-html-content-from-domelement-using-nodevalue
-echo utf8_decode($doc->saveXML($image)); break;
+echo $doc->saveXML($image); break;
 }
 
 }	

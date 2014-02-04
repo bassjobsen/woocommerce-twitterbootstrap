@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.3.0
+Version: 1.3.1
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -422,7 +422,9 @@ function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-produ
 {
 	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/'.$template.'.php' ))
 	{
-					 $template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/bs-content-product.php';
+					 //$template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/bs-content-product.php';
+					 //from: http://wordpress.stackexchange.com/questions/119064/what-should-i-use-instead-of-wp-content-dir-and-wp-plugin-dir
+					 $template = plugin_dir_path( __FILE__ ). 'templates/bs-content-product.php';
 	}	
 	
 
@@ -588,7 +590,8 @@ if(empty($thumbnail))
 	
 	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/placeholder.php' ))
 	{
-					 $template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/placeholder.php';
+					 //$template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/placeholder.php';
+					 $template = plugin_dir_path( __FILE__ ). 'templates/placeholder.php';
 	}	
 	include($template);
 	return;

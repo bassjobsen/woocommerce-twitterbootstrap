@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Twitter Bootstrap
 Depends: WooCommerce
 Plugin URI: https://github.com/bassjobsen/woocommerce-twitterbootstrap
 Description: Adds Twitter's Bootstrap's Grid to WooCommerce
-Version: 1.3.1
+Version: 1.3.2
 Author: Bass Jobsen
 Author URI: http://bassjobsen.weblogs.fm/
 License: GPLv2
@@ -244,7 +244,7 @@ function showform()
 </table> 
 <?php submit_button(); ?> </form> 
 </div>
-<?
+<?php
 }	
 /**
  * Output featured products

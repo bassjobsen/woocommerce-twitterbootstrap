@@ -70,7 +70,7 @@ This will be result in the grids shown below:
 
 Template overwriting
 --------------------
-Copy the templates from wp-content/plugins/woocommerce-twitter/templates/ to wp-content/themes/{your(child)theme}/woocommerce-twitter/. Edit the templates to adopt them to your needs now.
+Copy the templates from wp-content/plugins/woocommerce-twitter/templates/ to wp-content/themes/{your(child)theme}/woocommerce-twitterbootstrap/. Edit the templates to adopt them to your needs now.
 When a product does not have a featured image placeholder.php sets a placeholder image. This template can be overwritten too. 
 
 Shortcodes

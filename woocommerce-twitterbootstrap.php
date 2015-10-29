@@ -69,7 +69,7 @@ function init()
 	}
 
 	add_shortcode('featured_products', 'bs_featured_products');
-	add_shortcode('featured_products', 'bs_featured_products');
+	add_shortcode('recent_products', 'bs_recent_products');
 	
 add_action( 'wp_enqueue_scripts', array(&$this, 'woocommerce_twitterbootstrap_setstylesheets'), 99 );
 add_action( 'shop_loop', array($this, 'bs_shop_loop'), 99 );
@@ -301,7 +301,7 @@ public function bs_recent_products( $atts ) {
 			'post_type'=> 'product',
 			'post_status' => 'publish',
 			'ignore_sticky_posts'=> 1,
-			'meta_query' => $woocommerce->query->get_meta_query();
+			'meta_query' => $woocommerce->query->get_meta_query(),
 			'per_page' => '12',
 			'columns' => '4',
 			'orderby' => 'date',
@@ -468,7 +468,7 @@ function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-produ
 
 function bs_shop_loop($product=null, $columns=null){
 	
-	$template='bs-content-product'
+	$template='bs-content-product';
 
 	$woocommerce_loop = array('loop'=>0,'columns' => ($columns)?$columns:get_option( 'number_of_columns', 4 ));	
 

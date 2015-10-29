@@ -60,11 +60,17 @@ public function __construct()
 
 function init()
 {
-remove_shortcode( 'featured_products' );
-add_shortcode( 'featured_products', array(&$this, 'featured_products' ));
-remove_shortcode( 'recent_products' );
-add_shortcode( 'recent_products', array(&$this, 'recent_products' ));
+	if ( shortcode_exists( 'featured_products' ) ) {
+		remove_shortcode( 'featured_products' );
+	}
+	
+	if ( shortcode_exists( 'recent_products' ) ) {
+		remove_shortcode( 'recent_products' );
+	}
 
+	add_shortcode('featured_products', 'bs_featured_products');
+	add_shortcode('featured_products', 'bs_featured_products');
+	
 add_action( 'wp_enqueue_scripts', array(&$this, 'woocommerce_twitterbootstrap_setstylesheets'), 99 );
 add_action( 'shop_loop', array($this, 'bs_shop_loop'), 99 );
 add_action( 'woocommerce_before_single_product_summary', array(&$this, 'woocommerce_before_single_product_summary_bs'), 1 );
@@ -253,38 +259,30 @@ function showform()
  * @param array $atts
  * @return string
  */
-function featured_products( $atts ) 
-{
+function bs_featured_products( $atts ) {
 
-extract(shortcode_atts(array(
-'per_page' => 12,
-'columns' => 4,
-'orderby' => 'date',
-'order' => 'desc',
-'content_product_template' => 'bs-content-product'
-), $atts));
+$atts = shortcode_atts(array(
+	'post_type'=> 'product',
+	'post_status' => 'publish',
+	'ignore_sticky_posts'=> 1,
+	'per_page' => 12,
+	'columns' => 4,
+	'orderby' => 'date',
+	'order' => 'desc',
+	'meta_query' => array(
+		array(
+			'key' => '_visibility',
+			'value' => array('catalog', 'visible'),
+			'compare' => 'IN'
+		),
+		array(
+			'key' => '_featured',
+			'value' => 'yes'
+		)
+	), $atts, 'featured_products'));
 
-$args = array(
-'post_type'=> 'product',
-'post_status' => 'publish',
-'ignore_sticky_posts'=> 1,
-'posts_per_page' => $per_page,
-'orderby' => $orderby,
-'order' => $order,
-'meta_query' => array(
-array(
-'key' => '_visibility',
-'value' => array('catalog', 'visible'),
-'compare' => 'IN'
-),
-array(
-'key' => '_featured',
-'value' => 'yes'
-)
-)
-);
 
-return $this->showproductspeciallist($args,$content_product_template,$columns);
+return $this->showproductspeciallist( $atts );
 
 }
 /**
@@ -294,57 +292,55 @@ return $this->showproductspeciallist($args,$content_product_template,$columns);
  * @param array $atts
  * @return string
  */
-public function recent_products( $atts ) 
-{
+public function bs_recent_products( $atts ) {
 
-global $woocommerce;
-
-extract(shortcode_atts(array(
-'per_page' => '12',
-'columns' => '4',
-'orderby' => 'date',
-'order' => 'desc',
-'content_product_template' => 'bs-content-product'
-), $atts));
-
-$meta_query = $woocommerce->query->get_meta_query();
-
-$args = array(
-'post_type'=> 'product',
-'post_status' => 'publish',
-'ignore_sticky_posts'=> 1,
-'posts_per_page' => $per_page,
-'orderby' => $orderby,
-'order' => $order,
-'meta_query' => $meta_query
-);	
-
-return $this->showproductspeciallist($args,$content_product_template,$columns);
-
-}
-function showproductspeciallist($args,$content_product_template,$columns=null)
-{
+	global $woocommerce;
 	
-global $woocommerce_loop;	
-ob_start();
+	$atts = shortcode_atts(
+		array(
+			'post_type'=> 'product',
+			'post_status' => 'publish',
+			'ignore_sticky_posts'=> 1,
+			'meta_query' => $woocommerce->query->get_meta_query();
+			'per_page' => '12',
+			'columns' => '4',
+			'orderby' => 'date',
+			'order' => 'desc',
+		), $atts, 'recent-products');
 
-$products= new WP_Query( $args );
+	
+	return $this->showproductspeciallist($atts);
 
-$woocommerce_loop['columns'] = ($columns)?$columns:get_option( 'number_of_columns', 4 );
-
-if ( $products->have_posts() ) 
-{
-$this->bs_shop_loop($products,$content_product_template,$columns);	
 }
 
-wp_reset_postdata();
-return '<div class="woocommerce">' . ob_get_clean() . '</div>';
-}	
+
+function showproductspeciallist($atts)
+{
+	$columns = $atts['columns'];
+	$args = $atts; // because i think that variable needs to be called $args
+	
+	global $woocommerce_loop;	
+	ob_start();
+
+	$products = new WP_Query( $args );
+
+	$woocommerce_loop['columns'] = $columns;
+
+	if ( $products->have_posts() ) {
+		$this->bs_shop_loop($products,$args);	
+	}
+
+	wp_reset_postdata();
+	
+	return '<div class="woocommerce">' . ob_get_clean() . '</div>';
+}
+
 function woocommerce_twitterbootstrap_setstylesheets()
 {
 	wp_register_style ( 'woocommerce-twitterbootstrap', plugins_url( 'css/woocommerce-twitterboostrap.css' , __FILE__ ), 'woocommerce' );
-    wp_enqueue_style ( 'woocommerce-twitterbootstrap');
+    	wp_enqueue_style ( 'woocommerce-twitterbootstrap');
 }
+
 function get_grid_classes($woocommerce_loop)
 {
 /* the grid display */
@@ -418,55 +414,63 @@ switch($woocommerce_loop['columns'])
 }
 return $classes;
 }
-function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-product')
-{
-	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/'.$template.'.php' ))
-	{
-					 //$template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/bs-content-product.php';
-					 //from: http://wordpress.stackexchange.com/questions/119064/what-should-i-use-instead-of-wp-content-dir-and-wp-plugin-dir
-					 $template = plugin_dir_path( __FILE__ ). 'templates/bs-content-product.php';
+
+function bs_product_loop(&$woocommerce_loop,$classes,$template='bs-content-product'){
+	
+	if(!file_exists( $template = get_stylesheet_directory() . '/woocommerce-twitterbootstrap/'.$template.'.php' )){
+		//$template = WP_PLUGIN_DIR.'/'.str_replace( basename( __FILE__), "", plugin_basename(__FILE__) ).'templates/bs-content-product.php';
+		//from: http://wordpress.stackexchange.com/questions/119064/what-should-i-use-instead-of-wp-content-dir-and-wp-plugin-dir
+		$template = plugin_dir_path( __FILE__ ). 'templates/bs-content-product.php';
 	}	
 	
 
-				include($template);
+	include($template);
 
 
-				if(get_option( 'tbversion', 3 )==3)// only for version 3+
-				{
-				if($woocommerce_loop['columns'] == 6) 
-				{
-					if(0 == ($woocommerce_loop['loop'] % 6)){?><div class="clearfix visible-md visible-lg"></div><?php }
-					if(0 == ($woocommerce_loop['loop'] % 4)){?><div class="clearfix visible-sm"></div><?php }
-					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-xs"></div><?php }
-			    }	
-			    elseif($woocommerce_loop['columns'] == 4) 
-				{
-					if(0 == ($woocommerce_loop['loop'] % 4)){?><div class="clearfix visible-md visible-lg"></div><?php }
-					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-sm"></div><?php }
-			    }
-			    elseif($woocommerce_loop['columns'] == 3) 
-				{
-					if(0 == ($woocommerce_loop['loop'] % 3)){?><div class="clearfix visible-md visible-lg"></div><?php }
-				}
-				elseif($woocommerce_loop['columns'] == 31) 
-				{
-					if(0 == ($woocommerce_loop['loop'] % 3)){?><div class="clearfix visible-md visible-lg"></div><?php }
-					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-sm"></div><?php }
-				}
-			    elseif($woocommerce_loop['columns'] == 2) 
-				{
-					if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix invisible-xs"></div><?php }
-				}
-			    }
-				$woocommerce_loop['loop']++;
+	if(get_option( 'tbversion', 3 )==3){ // only for version 3+
 				
+		if($woocommerce_loop['columns'] == 6){ 
 				
+			if(0 == ($woocommerce_loop['loop'] % 6)){?><div class="clearfix visible-md visible-lg"></div><?php }
+			if(0 == ($woocommerce_loop['loop'] % 4)){?><div class="clearfix visible-sm"></div><?php }
+			if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-xs"></div><?php }
+		}
+		
+		elseif($woocommerce_loop['columns'] == 4){ 
+				
+			if(0 == ($woocommerce_loop['loop'] % 4)){?><div class="clearfix visible-md visible-lg"></div><?php }
+			if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-sm"></div><?php }
+		}
+		elseif($woocommerce_loop['columns'] == 3){ 
+				
+			if(0 == ($woocommerce_loop['loop'] % 3)){?><div class="clearfix visible-md visible-lg"></div><?php }
+		
+		}
+		elseif($woocommerce_loop['columns'] == 31){ 
+				
+			if(0 == ($woocommerce_loop['loop'] % 3)){?><div class="clearfix visible-md visible-lg"></div><?php }
+			if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix visible-sm"></div><?php }
+		}
+		
+		elseif($woocommerce_loop['columns'] == 2){ 
+				
+			if(0 == ($woocommerce_loop['loop'] % 2)){?><div class="clearfix invisible-xs"></div><?php }
+		
+			
+		}
+			    
+	
+	}
+				
+	$woocommerce_loop['loop']++;
 
-}	
-function bs_shop_loop($product=null,$template='bs-content-product',$columns=null)
-{
+}
 
-$woocommerce_loop = array('loop'=>0,'columns' => ($columns)?$columns:get_option( 'number_of_columns', 4 ));	
+function bs_shop_loop($product=null, $columns=null){
+	
+	$template='bs-content-product'
+
+	$woocommerce_loop = array('loop'=>0,'columns' => ($columns)?$columns:get_option( 'number_of_columns', 4 ));	
 
 
 /* double check */
